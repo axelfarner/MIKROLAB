@@ -15,6 +15,15 @@ typedef struct {
 	volatile uint32_t PIN_CNF[32];
 } NRF_GPIO_REGS;
 
+
+/*
+
+Button 1 (normally high) -> P0.13
+Button 2 (normally high) -> P0.14 
+
+
+*/
+
 int main(){
 	// Configure LED Matrix
 	for(int i = 0; i <= 3; i++){
@@ -27,17 +36,21 @@ int main(){
 	int sleep = 0;
 
 	while(1){
-		if((GPIO->PIN_CNF[13])){
-			for(int i = 17; i<=20; i++){
-				GPIO->PIN_CNF[i] = 1;
+		if(!((GPIO->IN | 0b11111111111110111111111111111111)==0b11111111111111111111111111111111)){
+				//setter høy
+				GPIO->OUT |= 0b00000000000000000111100000000000;
+				//setter lav
+				GPIO->OUT &= 0b11111111111111111000011111111111;
 			}
-		}
+		
 
-		if((GPIO->PIN_CNF[14])){
-			for(int i = 17; i<=20; i++){
-				GPIO->PIN_CNF[i] = 0;
+		if(!((GPIO->IN | 0b11111111111111011111111111111111)==0b11111111111111111111111111111111)){
+				//setter lav
+				GPIO->OUT &= 0b11111111111111111000011111111111;
+				//setter høy
+				GPIO->OUT |= 0b00000000000000000111100000000000;
 			}
-		}
+		
 
 		sleep = 10000;
 		while(--sleep); // Delay
