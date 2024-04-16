@@ -7,9 +7,7 @@
 
 //320 - 81
 //baudrate, enable, pselrts og pselcts, tasks_starttrx, events_txrdy, events_rxdrdy
-
-
-#define GPIO ((NRF_UART_REG*)0x40002000)
+#define UART ((NRF_UART_REG*)0x40002000)
 
 typedef struct{
     volatile uint32_t TASKS_STARTRX;
@@ -28,8 +26,11 @@ typedef struct{
     volatile uint32_t RXD; // UART_INT_RX
     volatile uint32_t TXD; // UART_INT_TX
     volatile uint32_t BAUDRATE;
-}NRF_UART_REG;
+} NRF_UART_REG;
 
-void uart_init(){
+void uart_init() {
+    GPIO->PIN_CNF[6] = 0;
+    GPIO->PIN_CNF[8] = 1;
+    UART->BAUDRATE = 9600;
 
 }
