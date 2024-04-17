@@ -37,18 +37,17 @@ int main(){
 
 	while(1) {
 		// bit #13 is checked for 
-		if (!(GPIO->IN && 1 << 13)) {
+		if (!(GPIO->IN & 1 << 13)) {
 				//setter høy 11 - 14, 0 på resten
 				GPIO->OUT |= 0x7800;
 			}
 		
 
-		if (!(GPIO->IN && 1 << 14)) {
+		if (!(GPIO->IN & 1 << 14)) {
 				//setter lav
 				GPIO->OUT &= 0xFFFF87FF;
 			}
 		
-
 		sleep = 10000;
 		while(--sleep); // Delay
 	}
