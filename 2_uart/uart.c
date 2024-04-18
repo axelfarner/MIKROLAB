@@ -14,34 +14,43 @@ typedef struct {
     volatile uint32_t TASKS_STOPRX;
     volatile uint32_t TASKS_STARTTX;
     volatile uint32_t TASKS_STOPTX;
-    volatile uint32_t RESEVRED0[3];
+    volatile uint32_t RESEVRED0[62];
+
     volatile uint32_t EVENTS_RXDRDY;
+    volatile uint32_t RESEVRED1[4];
     volatile uint32_t EVENTS_TXDRDY;    
-    volatile uint32_t RESERVED1[988]; // dette var definitivt veldig feil
+    volatile uint32_t RESERVED1[248]; // dette var definitivt veldig feil
     volatile uint32_t ENABLE;
+    volatile uint32_t RESEVRED2;
     volatile uint32_t PSELRTS;
     volatile uint32_t PSELTXD;
     volatile uint32_t PSELCTS;
     volatile uint32_t PSELRXD;
     volatile uint32_t RXD; // UART_INT_RX
     volatile uint32_t TXD; // UART_INT_TX
+    volatile uint32_t RESEVRED3;
     volatile uint32_t BAUDRATE;
+    volatile uint32_t RESEVRED4[17];
     volatile uint32_t CONFIG;
 } NRF_UART_REG;
 
 void uart_init() {
-    GPIO->PIN_CNF[6] = 1; // output 
-    GPIO->PIN_CNF[8] = 0; // input
+    GPIO->PIN_CNF[6] = 0; // output 
+
+    GPIO->PIN_CNF[8] = 1; // input
 
     UART->ENABLE = 4;
 
     UART->BAUDRATE = 0x00275000;
 
-    UART->PSELRXD = 6; //try left shift if no work
-    UART->PSELTXD = 8; 
+    UART->PSELRXD = 8; 
+    UART->PSELTXD = 6;
 
     UART->PSELRTS = 0xFFFFFFFF;
     UART->PSELCTS = 0xFFFFFFFF;
+
+    // UART->PSELRXD = (1 << 6); 
+    // UART->PSELTXD = (1 << 8); 
     
     UART->TASKS_STARTRX = 1;    
 }
@@ -51,7 +60,7 @@ void uart_send(char letter) {
     UART->TXD = letter;
     
     while(UART->EVENTS_TXDRDY == 0){
-        continue;
+        
     };
 
     UART->EVENTS_TXDRDY = 0;

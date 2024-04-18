@@ -24,28 +24,29 @@ Button 2 (normally high) -> P0.14
 
 */
 
-int main(){
+int main() {
 	// Configure LED Matrix
-	for(int i = 0; i <= 3; i++){
+	for(int i = 17; i <= 20; i++) {
 		GPIO->DIRSET = (1 << i);
 		}
 
-	GPIO->PIN_CNF[13] = 0;
-	GPIO->PIN_CNF[14] = 0;
+	GPIO->PIN_CNF[13] = (3 << 2);
+	GPIO->PIN_CNF[14] = (3 << 2);
 
 	int sleep = 0;
 
 	while(1) {
+
 		// bit #13 is checked for 
 		if (!(GPIO->IN & 1 << 13)) {
 				//setter høy 11 - 14, 0 på resten
-				GPIO->OUT |= 0x7800;
+				GPIO->OUTCLR |= ((1 << 17) | (1 << 18) | (1 << 19) | (1 << 20));
 			}
 		
 
 		if (!(GPIO->IN & 1 << 14)) {
 				//setter lav
-				GPIO->OUT &= 0xFFFF87FF;
+				GPIO->OUTSET |= ((1 << 17) | (1 << 18) | (1 << 19) | (1 << 20));
 			}
 		
 		sleep = 10000;
