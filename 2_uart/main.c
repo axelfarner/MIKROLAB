@@ -14,6 +14,17 @@ ssize_t _write(int fd, const void *buf, size_t count){
     return count;
 }
 
+ssize_t _read(int fd, void *buf, size_t count){
+    char *str = (char *)(buf);
+    char letter;
+    do {
+    letter = uart_read();
+    } while(letter == '\0');
+
+    *str = letter;
+    return 1;
+}
+
   int main() {
 	// Configure LED Matrix
 	for (int i = 17; i <= 20; i++) {
@@ -23,6 +34,7 @@ ssize_t _write(int fd, const void *buf, size_t count){
 	GPIO->PIN_CNF[13] = (3 << 2);
 	GPIO->PIN_CNF[14] = (3 << 2);
     GPIO->PIN_CNF[15] = (3 << 2);
+    GPIO->PIN_CNF[16] = (3 << 2);
 
 
 
@@ -56,6 +68,22 @@ ssize_t _write(int fd, const void *buf, size_t count){
 
                 iprintf("The average grade in TTK%d was in %d was: %c\n\r",4235,2022,'B');
 			}
+
+        // this might not work as it cannot be tested
+
+        if (!(GPIO->IN & 1 << 15)) {
+
+            char *num1;
+            char *num2;
+                
+            GPIO->OUTCLR |= ((1 << 18));
+
+            iprintf("Kan jeg få to tall å multiplisere sammen?");
+
+            num1 = uart_read();
+            num2 = uart_read();
+
+		}
 
 		
         received = uart_read();
